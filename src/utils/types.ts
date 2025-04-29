@@ -18,3 +18,13 @@ export interface TokenId {
   token: string;
   id: string;
 }
+
+export interface Subject {
+  ID_MATERIA: number;
+  NOMBRE: string;
+}
+
+export interface Topic {
+  ID_TEMA: number;
+  NOMBRE: string;
+}
