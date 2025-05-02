@@ -35,3 +35,14 @@ export interface Group {
   SEMESTRE: number;
   ID_MATERIA: number;
 }
+
+export interface Question {
+  ID_PREGUNTA: number;
+  ENUNCIADO: string;
+  ES_PUBLICA: string;
+  TIPO_PREGUNTA: string;
+  ID_PREGUNTA_COMPUESTA: number | null;
+  ID_TEMA: number;
+  ID_PROFESOR: number;
+  ESTADO: string;
+}
