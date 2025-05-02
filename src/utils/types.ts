@@ -12,6 +12,15 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface QuestionCredentials {
+  statement: string;
+  isPublic: string;
+  questionType: string;
+  composedQuestionId: number | null;
+  topicId: number;
+  professorId: number;
+}
+
 // interfaces for the response format
 
 export interface TokenId {
@@ -45,4 +54,8 @@ export interface Question {
   ID_TEMA: number;
   ID_PROFESOR: number;
   ESTADO: string;
+}
+
+export interface QuestionId {
+  idQuestion: number;
 }

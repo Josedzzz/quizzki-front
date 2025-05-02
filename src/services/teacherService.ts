@@ -1,4 +1,12 @@
-import { ApiResponse, Subject, Topic, Group, Question } from "../utils/types";
+import {
+  ApiResponse,
+  Subject,
+  Topic,
+  Group,
+  Question,
+  QuestionCredentials,
+  QuestionId,
+} from "../utils/types";
 
 const API_URL = "http://localhost:8081";
 
@@ -152,6 +160,45 @@ export const getQuestionsByTopicService = async (
     }
   } catch (error) {
     console.error("Error obteniendo las preguntas: ", error);
+    throw error;
+  }
+};
+
+/**
+ * promise function to create a question
+ * @param token - the token of the admin
+ * @param credentials - the credentials of the question
+ * @returns the new question id
+ */
+export const createQuestionService = async (
+  token: string,
+  credentials: QuestionCredentials,
+): Promise<ApiResponse<QuestionId>> => {
+  try {
+    const response = await fetch(`${API_URL}/api/teacher/question/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(credentials),
+    });
+    const errorResponse: ApiResponse<null> = await response.json();
+    if (!response.ok) {
+      throw new Error(errorResponse.message);
+    }
+    if (errorResponse.status === "ERROR") {
+      throw new Error(errorResponse.message);
+    }
+    const responseData: ApiResponse<QuestionId> = await response.json();
+    if (responseData.data) {
+      return responseData;
+    } else {
+      console.log(response);
+      throw new Error("Formato no esperado para la respuesta");
+    }
+  } catch (error) {
+    console.error("Error creando la preguntas: ", error);
     throw error;
   }
 };
