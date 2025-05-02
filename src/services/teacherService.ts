@@ -1,4 +1,4 @@
-import { ApiResponse, Subject, Topic } from "../utils/types";
+import { ApiResponse, Subject, Topic, Group } from "../utils/types";
 
 const API_URL = "http://localhost:8081";
 
@@ -48,7 +48,7 @@ export const getTopicsService = async (
 ): Promise<ApiResponse<Topic[]>> => {
   try {
     const response = await fetch(`${API_URL}/api/teacher/topics`, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -70,6 +70,47 @@ export const getTopicsService = async (
     }
   } catch (error) {
     console.error("Error obteniendo los temas: ", error);
+    throw error;
+  }
+};
+
+/**
+ * promise function to get the groups by subject
+ * @param token - the admin token
+ * @param subjectId - the id of the subject
+ * @returns all the groups
+ */
+export const getGroupsBySubjectService = async (
+  token: string,
+  subjectId: string,
+): Promise<ApiResponse<Group[]>> => {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/teacher/subjects/${subjectId}/groups`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    const errorResponse: ApiResponse<null> = await response.json();
+    if (!response.ok) {
+      throw new Error(errorResponse.message);
+    }
+    if (errorResponse.status === "ERROR") {
+      throw new Error(errorResponse.message);
+    }
+    const responseData: ApiResponse<Group[]> = await response.json();
+    if (responseData.data) {
+      return responseData;
+    } else {
+      console.log(response);
+      throw new Error("Formato no esperado para la respuesta");
+    }
+  } catch (error) {
+    console.error("Error obteniendo los grupos: ", error);
     throw error;
   }
 };

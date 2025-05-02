@@ -28,3 +28,10 @@ export interface Topic {
   ID_TEMA: number;
   NOMBRE: string;
 }
+
+export interface Group {
+  ID_GRUPO: number;
+  NOMBRE: string;
+  SEMESTRE: number;
+  ID_MATERIA: number;
+}
