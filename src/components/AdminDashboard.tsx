@@ -5,14 +5,6 @@ import AdminTopics from "./AdminTopics";
 import AdminEvaluation from "./AdminEvaluation";
 
 export default function AdminDashboard() {
-  /*
-   * necesito los header:
-   * - obtener materias: ahi puedo ver las prupos por materia
-   * - obtener temas: ahi puedo ver las preguntas por tema y agregar a un tema una pregunta con sus respustas
-   * - crear evaluacion: ahi se crea una evaluacion, y cuando le pongo el topic aparecen las preguntas por tema
-   * dentro de esa misma evaluacion le asigno las perguntas por tema o las random que esa cosa me diga
-   * */
-
   const [card, setCard] = useState<string>("subjects");
 
   /**
