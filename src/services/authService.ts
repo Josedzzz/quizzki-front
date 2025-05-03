@@ -20,15 +20,15 @@ export const loginService = async (
       },
       body: JSON.stringify(credentials),
     });
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<TokenId> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
+      throw new Error(errorResponse.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
