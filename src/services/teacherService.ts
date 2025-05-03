@@ -31,15 +31,14 @@ export const getSubjectsService = async (
         Authorization: `Bearer ${token}`,
       },
     });
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<Subject[]> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -67,15 +66,14 @@ export const getTopicsService = async (
         Authorization: `Bearer ${token}`,
       },
     });
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<Topic[]> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "Error") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -108,15 +106,14 @@ export const getGroupsBySubjectService = async (
         },
       },
     );
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<Group[]> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "Error") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -149,15 +146,14 @@ export const getQuestionsByTopicService = async (
         },
       },
     );
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<Question[]> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -188,15 +184,14 @@ export const createQuestionService = async (
       },
       body: JSON.stringify(credentials),
     });
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<QuestionId> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -227,15 +222,14 @@ export const createAnswerService = async (
       },
       body: JSON.stringify(credentials),
     });
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<AnswerId> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -266,15 +260,14 @@ export const createEvaluationService = async (
       },
       body: JSON.stringify(credentials),
     });
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<EvaluationId> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -307,15 +300,14 @@ export const assignRandomQuestionService = async (
         },
       },
     );
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<null> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      throw new Error(responseData.message);
+    } else if (responseData.data) {
       return responseData;
     } else {
       console.log(response);
@@ -349,15 +341,14 @@ export const assignQuestionService = async (
         body: JSON.stringify(credentials),
       },
     );
-    const errorResponse: ApiResponse<null> = await response.json();
     if (!response.ok) {
-      throw new Error(errorResponse.message);
-    }
-    if (errorResponse.status === "ERROR") {
+      const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<null> = await response.json();
-    if (responseData.data) {
+    if (responseData.status === "ERROR") {
+      throw new Error(responseData.message);
+    } else if (responseData.status !== "ERROR") {
       return responseData;
     } else {
       console.log(response);
