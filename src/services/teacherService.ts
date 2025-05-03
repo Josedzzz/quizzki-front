@@ -8,6 +8,9 @@ import {
   QuestionId,
   AnswerCredentials,
   AnswerId,
+  EvaluationCredentials,
+  EvaluationId,
+  AssignQuestionCredentials,
 } from "../utils/types";
 
 const API_URL = "http://localhost:8081";
@@ -240,6 +243,128 @@ export const createAnswerService = async (
     }
   } catch (error) {
     console.error("Error creando la respuesta: ", error);
+    throw error;
+  }
+};
+
+/**
+ * promise function to create a evaluation
+ * @param token - the token of the admin
+ * @param credentials - the credentials of the evaluation
+ * @returns the id of the new evaluation
+ */
+export const createEvaluationService = async (
+  token: string,
+  credentials: EvaluationCredentials,
+): Promise<ApiResponse<EvaluationId>> => {
+  try {
+    const response = await fetch(`${API_URL}/api/teacher/evaluation/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(credentials),
+    });
+    const errorResponse: ApiResponse<null> = await response.json();
+    if (!response.ok) {
+      throw new Error(errorResponse.message);
+    }
+    if (errorResponse.status === "ERROR") {
+      throw new Error(errorResponse.message);
+    }
+    const responseData: ApiResponse<EvaluationId> = await response.json();
+    if (responseData.data) {
+      return responseData;
+    } else {
+      console.log(response);
+      throw new Error("Formato no esperado para la respuesta");
+    }
+  } catch (error) {
+    console.error("Error creando la evaluacion: ", error);
+    throw error;
+  }
+};
+
+/**
+ * promise function to assign a random question to a evaluation
+ * @param token - the token of the admin
+ * @param evaluationId - the id of the evaluation
+ * @returns a confirmation message
+ */
+export const assignRandomQuestionService = async (
+  token: string,
+  evaluationId: string,
+): Promise<ApiResponse<null>> => {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/teacher/evaluation/${evaluationId}/assign-random-questions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    const errorResponse: ApiResponse<null> = await response.json();
+    if (!response.ok) {
+      throw new Error(errorResponse.message);
+    }
+    if (errorResponse.status === "ERROR") {
+      throw new Error(errorResponse.message);
+    }
+    const responseData: ApiResponse<null> = await response.json();
+    if (responseData.data) {
+      return responseData;
+    } else {
+      console.log(response);
+      throw new Error("Formato no esperado para la respuesta");
+    }
+  } catch (error) {
+    console.error("Error agregando las preguntas random: ", error);
+    throw error;
+  }
+};
+
+/**
+ * promise function to assign a question to a evaluation
+ * @param token - the token of the admin
+ * @param credentials - the credentials to add assign the question
+ * @returns a confirmation message
+ */
+export const assignQuestionService = async (
+  token: string,
+  credentials: AssignQuestionCredentials,
+): Promise<ApiResponse<null>> => {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/teacher/evaluation/assign-question`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(credentials),
+      },
+    );
+    const errorResponse: ApiResponse<null> = await response.json();
+    if (!response.ok) {
+      throw new Error(errorResponse.message);
+    }
+    if (errorResponse.status === "ERROR") {
+      throw new Error(errorResponse.message);
+    }
+    const responseData: ApiResponse<null> = await response.json();
+    if (responseData.data) {
+      return responseData;
+    } else {
+      console.log(response);
+      throw new Error("Formato no esperado para la respuesta");
+    }
+  } catch (error) {
+    console.error("Error agregando la pregunta: ", error);
     throw error;
   }
 };

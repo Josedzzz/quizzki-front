@@ -27,6 +27,28 @@ export interface AnswerCredentials {
   idQuestion: number;
 }
 
+export interface EvaluationCredentials {
+  maxTime: number;
+  questionCount: number;
+  coursePercentage: number;
+  name: string;
+  passingPercentage: number;
+  startDateTime: string;
+  endDateTime: string;
+  randomQuestionCount: number;
+  topicId: number;
+  professorId: number;
+  groupId: number;
+}
+
+export interface AssignQuestionCredentials {
+  idQuestion: number;
+  idEvaluation: number;
+  percentage: number;
+  hasMaxTime: string;
+  questionTime: number;
+}
+
 // interfaces for the response format
 
 export interface TokenId {
@@ -68,4 +90,8 @@ export interface QuestionId {
 
 export interface AnswerId {
   idAnswerOption: string;
+}
+
+export interface EvaluationId {
+  idEvaluation: string;
 }
