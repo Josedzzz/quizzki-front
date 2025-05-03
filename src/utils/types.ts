@@ -21,6 +21,12 @@ export interface QuestionCredentials {
   professorId: number;
 }
 
+export interface AnswerCredentials {
+  description: string;
+  isCorrect: string;
+  idQuestion: number;
+}
+
 // interfaces for the response format
 
 export interface TokenId {
@@ -57,5 +63,9 @@ export interface Question {
 }
 
 export interface QuestionId {
-  idQuestion: number;
+  idQuestion: string;
+}
+
+export interface AnswerId {
+  idAnswerOption: string;
 }
