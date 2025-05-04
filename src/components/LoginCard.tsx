@@ -110,10 +110,10 @@ export default function LoginCard() {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className={`text-custom-black font-bold p-2 rounded-xl w-full ${
+              className={`text-white font-bold p-2 rounded-xl w-full ${
                 isLoading
                   ? "bg-blue-500 text-white cursor-not-allowed"
-                  : "bg-white hover:bg-blue-500 hover:text-white transition duration-300 ease-in-out transform hover:scale-105"
+                  : "bg-blue-500 hover:bg-white hover:text-blue-500 transition duration-300 ease-in-out transform hover:scale-105"
               }`}
             >
               {isLoading ? <i className="fa fa-spinner fa-spin"></i> : "Login"}
