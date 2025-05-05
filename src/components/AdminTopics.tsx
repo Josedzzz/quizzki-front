@@ -16,7 +16,6 @@ export default function AdminTopics() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [expandedTopicId, setExpandedTopicId] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -24,6 +23,17 @@ export default function AdminTopics() {
   const [newQuestion, setNewQuestion] = useState<{ [key: number]: string }>({});
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const [isCorrect, setIsCorrect] = useState<{ [key: number]: boolean }>({});
+
+  // states for loading forms
+  const [loadingAddQuestion, setLoadingAddQuestion] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [loadingAddAnswer, setLoadingAddAnswer] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [loadingQuestionsByTopic, setLoadingQuestionsByTopic] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   const token = document.cookie
     .split("; ")
@@ -61,7 +71,7 @@ export default function AdminTopics() {
     if (expandedTopicId === topicId) {
       setExpandedTopicId(null);
     } else {
-      setLoadingQuestions(true);
+      setLoadingQuestionsByTopic((prev) => ({ ...prev, [topicId]: true }));
       try {
         const response = await getQuestionsByTopicService(
           token,
@@ -72,7 +82,7 @@ export default function AdminTopics() {
       } catch (error) {
         console.error(error);
       } finally {
-        setLoadingQuestions(false);
+        setLoadingQuestionsByTopic((prev) => ({ ...prev, [topicId]: false }));
       }
     }
   };
@@ -85,7 +95,11 @@ export default function AdminTopics() {
   const handleAddQuestion = async (topicId: number) => {
     const statement = newQuestion[topicId];
     const idnum = Number(professorId);
-    if (!statement || !token || !idnum) return;
+    if (!token || !idnum) return;
+    if (!statement || statement.trim() === "") {
+      alert("La pregunta no puede estar vacía");
+      return;
+    }
     const credentials: QuestionCredentials = {
       statement,
       isPublic: "S",
@@ -94,6 +108,7 @@ export default function AdminTopics() {
       topicId,
       professorId: idnum,
     };
+    setLoadingAddQuestion((prev) => ({ ...prev, [topicId]: true }));
     try {
       const response = await createQuestionService(token, credentials);
       alert(response.message);
@@ -105,6 +120,8 @@ export default function AdminTopics() {
       setQuestions(updated.data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoadingAddQuestion((prev) => ({ ...prev, [topicId]: false }));
     }
   };
 
@@ -116,12 +133,17 @@ export default function AdminTopics() {
   const handleAddAnswer = async (questionId: number) => {
     const description = answers[questionId];
     const correct = isCorrect[questionId] || false;
-    if (!description || !token) return;
+    if (!token) return;
+    if (!description || description.trim() === "") {
+      alert("La pregunta no puede estar vacía");
+      return;
+    }
     const credentials: AnswerCredentials = {
       description,
       isCorrect: correct ? "S" : "N",
       idQuestion: questionId,
     };
+    setLoadingAddAnswer((prev) => ({ ...prev, [questionId]: true }));
     try {
       const response = await createAnswerService(token, credentials);
       setAnswers((prev) => ({ ...prev, [questionId]: "" }));
@@ -129,6 +151,8 @@ export default function AdminTopics() {
       alert(response.message);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoadingAddAnswer((prev) => ({ ...prev, [questionId]: false }));
     }
   };
 
@@ -138,102 +162,107 @@ export default function AdminTopics() {
 
   return (
     <main className="flex items-center justify-center w-full min-h-[calc(100vh-6rem)] p-6">
-      <div className="max-w-4xl w-full mx-auto bg-zinc-800 rounded-xl shadow-md p-6 border-4 border-indigo-500 max-h-[80vh] overflow-y-auto">
+      <div className="max-w-4xl w-full mx-auto bg-zinc-800 rounded-xl shadow-md p-6 border-4 border-blue-500 max-h-[80vh] overflow-y-auto">
         <h1 className="text-2xl font-bold text-white mb-4">Temas</h1>
         {message && <p className="text-white mb-4">{message}</p>}
 
         {isLoading ? (
-          <div className="text-indigo-400">Cargando temas...</div>
+          <div className="text-blue-500">Cargando temas...</div>
         ) : (
           <div className="space-y-4">
             {topics.map((topic) => (
               <div key={topic.ID_TEMA}>
                 <div
                   onClick={() => handleTopicClick(topic.ID_TEMA)}
-                  className="cursor-pointer bg-zinc-700 text-white px-4 py-2 rounded hover:bg-zinc-600 transition flex justify-between items-center"
+                  className="cursor-pointer bg-transparent text-white px-4 py-2 rounded hover:bg-zinc-600 transition flex justify-between items-center"
                 >
                   <span>
                     {topic.ID_TEMA} — {topic.NOMBRE}
                   </span>
-                  <span className="text-indigo-300">
-                    {expandedTopicId === topic.ID_TEMA ? "▲" : "▼"}
-                  </span>
+                  <div className="flex items-center gap-2 text-blue-500">
+                    {loadingQuestionsByTopic[topic.ID_TEMA] ? (
+                      <i className="fas fa-spinner animate-spin" />
+                    ) : (
+                      <span>
+                        {expandedTopicId === topic.ID_TEMA ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {expandedTopicId === topic.ID_TEMA && (
                   <div className="bg-zinc-900 rounded px-4 py-4 mt-2 space-y-4 text-white">
-                    {loadingQuestions ? (
-                      <p>Cargando preguntas...</p>
-                    ) : (
-                      <>
-                        {questions.map((question) => (
-                          <div
-                            key={question.ID_PREGUNTA}
-                            className="border-b border-zinc-600 pb-3"
-                          >
-                            <p className="text-indigo-400 font-semibold mb-1">
-                              {question.ID_PREGUNTA} — {question.ENUNCIADO}
-                            </p>
-                            <div className="flex flex-col gap-2">
-                              <textarea
-                                placeholder="Escribe una respuesta"
-                                value={answers[question.ID_PREGUNTA] || ""}
-                                onChange={(e) =>
-                                  setAnswers((prev) => ({
-                                    ...prev,
-                                    [question.ID_PREGUNTA]: e.target.value,
-                                  }))
-                                }
-                                className="bg-zinc-800 border border-zinc-600 rounded px-3 py-2 text-white"
-                              />
-                              <label className="flex items-center gap-2 text-sm">
-                                <input
-                                  type="checkbox"
-                                  checked={
-                                    isCorrect[question.ID_PREGUNTA] || false
-                                  }
-                                  onChange={(e) =>
-                                    setIsCorrect((prev) => ({
-                                      ...prev,
-                                      [question.ID_PREGUNTA]: e.target.checked,
-                                    }))
-                                  }
-                                />
-                                Es correcta
-                              </label>
-                              <button
-                                onClick={() =>
-                                  handleAddAnswer(question.ID_PREGUNTA)
-                                }
-                                className="self-start bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded text-sm"
-                              >
-                                Añadir respuesta
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-
-                        <div className="mt-4">
+                    {questions.map((question) => (
+                      <div
+                        key={question.ID_PREGUNTA}
+                        className="border-b border-zinc-600 pb-3"
+                      >
+                        <p className="text-blue-500 font-semibold mb-1">
+                          {question.ID_PREGUNTA} — {question.ENUNCIADO}
+                        </p>
+                        <div className="flex flex-col gap-2">
                           <textarea
-                            placeholder="Nueva pregunta"
-                            value={newQuestion[topic.ID_TEMA] || ""}
+                            placeholder="Escribe una respuesta"
+                            value={answers[question.ID_PREGUNTA] || ""}
                             onChange={(e) =>
-                              setNewQuestion((prev) => ({
+                              setAnswers((prev) => ({
                                 ...prev,
-                                [topic.ID_TEMA]: e.target.value,
+                                [question.ID_PREGUNTA]: e.target.value,
                               }))
                             }
-                            className="bg-zinc-800 border border-zinc-600 rounded px-3 py-2 text-white w-full"
+                            className="bg-zinc-800 border border-zinc-600 rounded px-3 py-2 text-white"
                           />
+                          <label className="flex items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={isCorrect[question.ID_PREGUNTA] || false}
+                              onChange={(e) =>
+                                setIsCorrect((prev) => ({
+                                  ...prev,
+                                  [question.ID_PREGUNTA]: e.target.checked,
+                                }))
+                              }
+                            />
+                            Es correcta
+                          </label>
                           <button
-                            onClick={() => handleAddQuestion(topic.ID_TEMA)}
-                            className="mt-2 bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
+                            onClick={() =>
+                              handleAddAnswer(question.ID_PREGUNTA)
+                            }
+                            className="self-start bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                            disabled={loadingAddAnswer[question.ID_PREGUNTA]}
                           >
-                            Añadir pregunta
+                            {loadingAddAnswer[question.ID_PREGUNTA] ? (
+                              <i className="fas fa-spinner animate-spin mr-2" />
+                            ) : null}
+                            Añadir respuesta
                           </button>
                         </div>
-                      </>
-                    )}
+                      </div>
+                    ))}
+                    <div className="mt-4">
+                      <textarea
+                        placeholder="Nueva pregunta"
+                        value={newQuestion[topic.ID_TEMA] || ""}
+                        onChange={(e) =>
+                          setNewQuestion((prev) => ({
+                            ...prev,
+                            [topic.ID_TEMA]: e.target.value,
+                          }))
+                        }
+                        className="bg-zinc-800 border border-zinc-600 rounded px-3 py-2 text-white w-full"
+                      />
+                      <button
+                        onClick={() => handleAddQuestion(topic.ID_TEMA)}
+                        className="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
+                        disabled={loadingAddQuestion[topic.ID_TEMA]}
+                      >
+                        {loadingAddQuestion[topic.ID_TEMA] ? (
+                          <i className="fas fa-spinner animate-spin mr-2" />
+                        ) : null}
+                        Añadir pregunta
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
