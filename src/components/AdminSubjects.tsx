@@ -11,7 +11,9 @@ export default function AdminSubjects() {
     null,
   );
   const [groups, setGroups] = useState<Group[]>([]);
-  const [loadingGroups, setLoadingGroups] = useState(false);
+  const [loadingGroupsBySubjectId, setLoadingGroupsBySubjectId] = useState<
+    number | null
+  >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -47,7 +49,7 @@ export default function AdminSubjects() {
     if (expandedSubjectId === subjectId) {
       setExpandedSubjectId(null);
     } else {
-      setLoadingGroups(true);
+      setLoadingGroupsBySubjectId(subjectId);
       try {
         const response = await getGroupsBySubjectService(
           token,
@@ -58,7 +60,7 @@ export default function AdminSubjects() {
       } catch (error) {
         console.error(error);
       } finally {
-        setLoadingGroups(false);
+        setLoadingGroupsBySubjectId(null);
       }
     }
   };
@@ -98,9 +100,16 @@ export default function AdminSubjects() {
                         <span>
                           {subject.ID_MATERIA} — {subject.NOMBRE}
                         </span>
-                        <span className="text-blue-400">
-                          {expandedSubjectId === subject.ID_MATERIA ? "▲" : "▼"}
-                        </span>
+                        <div className="flex items-center gap-2 text-blue-400">
+                          {loadingGroupsBySubjectId === subject.ID_MATERIA && (
+                            <i className="fas fa-spinner fa-spin" />
+                          )}
+                          <span>
+                            {expandedSubjectId === subject.ID_MATERIA
+                              ? "▲"
+                              : "▼"}
+                          </span>
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -108,12 +117,7 @@ export default function AdminSubjects() {
                   {expandedSubjectId === subject.ID_MATERIA && (
                     <tr className="text-blue-400">
                       <td colSpan={2} className="px-4 py-2">
-                        {loadingGroups ? (
-                          <div className="flex items-center gap-2 text-blue-400">
-                            <i className="fas fa-spinner fa-spin"></i>
-                            <span>Cargando grupos...</span>
-                          </div>
-                        ) : groups.length > 0 ? (
+                        {groups.length > 0 ? (
                           <ul className="list-disc ml-4 space-y-1">
                             {groups.map((group) => (
                               <li key={group.ID_GRUPO}>
