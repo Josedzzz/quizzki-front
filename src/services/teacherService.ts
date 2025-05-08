@@ -307,7 +307,7 @@ export const assignRandomQuestionService = async (
     const responseData: ApiResponse<null> = await response.json();
     if (responseData.status === "ERROR") {
       throw new Error(responseData.message);
-    } else if (responseData.data) {
+    } else if (responseData) {
       return responseData;
     } else {
       console.log(response);

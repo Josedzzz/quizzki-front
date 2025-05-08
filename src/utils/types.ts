@@ -35,7 +35,7 @@ export interface EvaluationCredentials {
   passingPercentage: number;
   startDateTime: string;
   endDateTime: string;
-  randomQuestionCount: number;
+  randomQuestionsCount: number;
   topicId: number;
   professorId: number;
   groupId: number;
