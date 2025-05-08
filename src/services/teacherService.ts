@@ -71,7 +71,7 @@ export const getTopicsService = async (
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<Topic[]> = await response.json();
-    if (responseData.status === "Error") {
+    if (responseData.status === "ERROR") {
       throw new Error(responseData.message);
     } else if (responseData.data) {
       return responseData;
@@ -111,7 +111,7 @@ export const getGroupsBySubjectService = async (
       throw new Error(errorResponse.message);
     }
     const responseData: ApiResponse<Group[]> = await response.json();
-    if (responseData.status === "Error") {
+    if (responseData.status === "ERROR") {
       throw new Error(responseData.message);
     } else if (responseData.data) {
       return responseData;
