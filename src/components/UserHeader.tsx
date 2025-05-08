@@ -17,7 +17,7 @@ export default function UserHeader({ toggleCard, card }: UserHeaderProps) {
     <header className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[94%] bg-blue-500 shadow-lg rounded-2xl p-2 z-50 ">
       <div className="flex justify-between items-center max-w-7xl mx-auto px-2">
         <h2 className="text-lg sm:text-1xl md:text-2xl font-bold text-white">
-          Menú Profesor
+          Menú Estudiante
         </h2>
 
         {/* navigation links */}
