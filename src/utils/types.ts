@@ -49,6 +49,24 @@ export interface AssignQuestionCredentials {
   questionTime: number;
 }
 
+export interface EvaluationCredentials {
+  idGroup: number;
+  idStudent: number;
+  actualDate: string;
+}
+
+export interface PresentationCredentials {
+  idEvaluation: number;
+  idEstudent: number;
+  ipSource: string;
+}
+
+export interface RegisterAnswerCredentials {
+  idEvaluationPresentation: number;
+  idQuestion: number;
+  idAnswer: number;
+}
+
 // interfaces for the response format
 
 export interface TokenId {
@@ -94,4 +112,51 @@ export interface AnswerId {
 
 export interface EvaluationId {
   idEvaluation: string;
+}
+
+export interface UserGroup {
+  ID_GRUPO: number;
+  NOMBRE_GRUPO: string;
+  NOMBRE_MATERIA: string;
+}
+
+export interface UserEvaluation {
+  ID_EVALUACION: number;
+  TIEMPO_MAX: number;
+  NUMERO_PREGUNTAS: number;
+  PORRCENTAJE_CURSO: number;
+  NOMBRE: string;
+  PORCENTAJE_APROBATORIO: number;
+  FECHA_HORA_INICIO: string;
+  FECHA_HORA_FIN: string;
+  NUM_PREGUNTAS_ALEATORIAS: number | null;
+  ID_TEMA: number;
+  ID_PROFESOR: number;
+  ID_GRUPO: number;
+  ESTADO: string;
+}
+
+export interface PresentationId {
+  id_presentacion: string;
+}
+
+export interface QuestionUser {
+  PORCENTAJE_EVALUACION: number;
+  TIEMPO_PREGUNTA: number | null;
+  TIENE_TIEMPO_MAXIMO: "S" | "N";
+  ID_PREGUNTA: number;
+  ENUNCIADO: string;
+  ES_PUBLICA: "S" | "N";
+  TIPO_PREGUNTA: string;
+  ID_PREGUNTA_COMPUESTA: number | null;
+  ID_TEMA: number;
+  ID_PROFESOR: number;
+  ESTADO: string;
+}
+
+export interface QuestionOptionsUser {
+  ID_RESPUESTA: number;
+  DESCRIPTION: string;
+  ES_CORRECTA: "S" | "N";
+  ID_PREGUNTA: number;
 }
