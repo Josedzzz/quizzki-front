@@ -1,6 +1,6 @@
 import {
   ApiResponse,
-  EvaluationCredentials,
+  EvaluationCredentialsUser,
   PresentationCredentials,
   PresentationId,
   QuestionOptionsUser,
@@ -24,7 +24,7 @@ export const getStudentGroupsService = async (
 ): Promise<ApiResponse<UserGroup[]>> => {
   try {
     const response = await fetch(`${API_URL}/api/student/${userId}/groups`, {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -59,7 +59,7 @@ export const getStudentGroupsService = async (
 export const getStudentEvaluationsService = async (
   token: string,
   userId: string,
-  credentials: EvaluationCredentials,
+  credentials: EvaluationCredentialsUser,
 ): Promise<ApiResponse<UserEvaluation>> => {
   try {
     const response = await fetch(
