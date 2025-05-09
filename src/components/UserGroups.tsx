@@ -20,6 +20,7 @@ export default function UserGroups() {
   const [loadingEvaluations, setLoadingEvaluations] = useState(false);
   const [presentationId, setPresentationId] = useState<string | null>(null);
   const [loadingPresentation, setLoadingPresentation] = useState(false);
+  const [evaluationId, setEvaluationId] = useState<number | null>(null);
 
   const token = document.cookie
     .split("; ")
@@ -42,6 +43,7 @@ export default function UserGroups() {
         credentials,
       );
       setPresentationId(res.data.id_presentacion);
+      setEvaluationId(evalItem.ID_EVALUACION);
     } catch (err: any) {
       setMessage(err.message);
     } finally {
@@ -97,8 +99,13 @@ export default function UserGroups() {
     fetchGroups();
   }, []);
 
-  if (presentationId) {
-    return <UserPresentEvaluation presentationId={presentationId} />;
+  if (presentationId && evaluationId) {
+    return (
+      <UserPresentEvaluation
+        presentationId={presentationId}
+        evaluationId={String(evaluationId)}
+      />
+    );
   }
 
   return (
