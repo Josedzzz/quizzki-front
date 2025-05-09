@@ -1,10 +1,11 @@
 import {
   ApiResponse,
   EvaluationCredentialsUser,
+  FinishEvaluation,
   PresentationCredentials,
   PresentationId,
-  QuestionOptionsUser,
-  QuestionUser,
+  QuestionOptionResponse,
+  QuestionUserResponse,
   RegisterAnswerCredentials,
   UserEvaluation,
   UserGroup,
@@ -138,16 +139,16 @@ export const presentEvaluationUserService = async (
 /**
  * promise function to get the questions
  * @param token - the token of the user
- * @param presentationId - the id of the presentation
+ * @param evaluationId - the id of the evaluation
  * @returns all the questions of the presentation
  */
 export const getQuestionsUserService = async (
   token: string,
-  presentationId: string,
-): Promise<ApiResponse<QuestionUser[]>> => {
+  evaluationId: string,
+): Promise<ApiResponse<QuestionUserResponse>> => {
   try {
     const response = await fetch(
-      `${API_URL}/api/student/evaluations/${presentationId}/questions`,
+      `${API_URL}/api/student/evaluations/${evaluationId}/questions`,
       {
         method: "GET",
         headers: {
@@ -160,7 +161,8 @@ export const getQuestionsUserService = async (
       const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
-    const responseData: ApiResponse<QuestionUser[]> = await response.json();
+    const responseData: ApiResponse<QuestionUserResponse> =
+      await response.json();
     if (responseData.status === "ERROR") {
       throw new Error(responseData.message);
     } else if (responseData.data) {
@@ -187,7 +189,7 @@ export const getQuestionsUserService = async (
 export const getQuestionOptionsUserService = async (
   token: string,
   questionId: string,
-): Promise<ApiResponse<QuestionOptionsUser[]>> => {
+): Promise<ApiResponse<QuestionOptionResponse>> => {
   try {
     const response = await fetch(
       `${API_URL}/api/student/evaluations/questions/${questionId}/options`,
@@ -203,7 +205,7 @@ export const getQuestionOptionsUserService = async (
       const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
-    const responseData: ApiResponse<QuestionOptionsUser[]> =
+    const responseData: ApiResponse<QuestionOptionResponse> =
       await response.json();
     if (responseData.status === "ERROR") {
       throw new Error(responseData.message);
@@ -253,7 +255,7 @@ export const registerAnswerUserService = async (
     const responseData: ApiResponse<null> = await response.json();
     if (responseData.status === "ERROR") {
       throw new Error(responseData.message);
-    } else if (responseData.data) {
+    } else if (responseData) {
       return responseData;
     } else {
       console.log(response);
@@ -274,7 +276,7 @@ export const registerAnswerUserService = async (
 export const finishEvaluationUserService = async (
   token: string,
   presentationId: number,
-): Promise<ApiResponse<null>> => {
+): Promise<ApiResponse<FinishEvaluation>> => {
   try {
     const response = await fetch(
       `${API_URL}/api/student/evaluations/${presentationId}/finish`,
@@ -290,10 +292,10 @@ export const finishEvaluationUserService = async (
       const errorResponse: ApiResponse<null> = await response.json();
       throw new Error(errorResponse.message);
     }
-    const responseData: ApiResponse<null> = await response.json();
+    const responseData: ApiResponse<FinishEvaluation> = await response.json();
     if (responseData.status === "ERROR") {
       throw new Error(responseData.message);
-    } else if (responseData.data) {
+    } else if (responseData) {
       return responseData;
     } else {
       console.log(response);

@@ -154,9 +154,21 @@ export interface QuestionUser {
   ESTADO: string;
 }
 
+export interface QuestionUserResponse {
+  preguntas: QuestionUser[];
+}
+
 export interface QuestionOptionsUser {
   ID_RESPUESTA: number;
-  DESCRIPTION: string;
+  DESCRIPCION: string;
   ES_CORRECTA: "S" | "N";
   ID_PREGUNTA: number;
+}
+
+export interface QuestionOptionResponse {
+  opciones: QuestionOptionsUser[];
+}
+
+export interface FinishEvaluation {
+  calificacion: string;
 }
