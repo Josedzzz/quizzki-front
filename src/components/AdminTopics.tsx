@@ -18,6 +18,9 @@ export default function AdminTopics() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [questionType, setQuestionType] = useState<{ [key: number]: string }>(
+    {},
+  );
 
   // forms for the answers
   const [newQuestion, setNewQuestion] = useState<{ [key: number]: string }>({});
@@ -100,10 +103,11 @@ export default function AdminTopics() {
       alert("La pregunta no puede estar vacía");
       return;
     }
+
     const credentials: QuestionCredentials = {
       statement,
       isPublic: "S",
-      questionType: "Selección única",
+      questionType: questionType[topicId] || "Selección única",
       composedQuestionId: null,
       topicId,
       professorId: idnum,
@@ -252,16 +256,43 @@ export default function AdminTopics() {
                         }
                         className="bg-zinc-800 border border-zinc-600 rounded px-3 py-2 text-white w-full"
                       />
-                      <button
-                        onClick={() => handleAddQuestion(topic.ID_TEMA)}
-                        className="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
-                        disabled={loadingAddQuestion[topic.ID_TEMA]}
-                      >
-                        {loadingAddQuestion[topic.ID_TEMA] ? (
-                          <i className="fas fa-spinner animate-spin mr-2" />
-                        ) : null}
-                        Añadir pregunta
-                      </button>
+
+                      <div className="flex flex-col sm:flex-row gap-2 mt-2 items-start">
+                        <select
+                          value={
+                            questionType[topic.ID_TEMA] || "Selección única"
+                          }
+                          onChange={(e) =>
+                            setQuestionType((prev) => ({
+                              ...prev,
+                              [topic.ID_TEMA]: e.target.value,
+                            }))
+                          }
+                          className="bg-zinc-800 border border-zinc-600 rounded px-3 py-2 text-white"
+                        >
+                          <option value="Selección única">
+                            Selección única
+                          </option>
+                          <option value="Selección múltiple">
+                            Selección múltiple
+                          </option>
+                          <option value="Verdadero/Falso">
+                            Verdadero/Falso
+                          </option>
+                          <option value="Ordenamiento">Ordenamiento</option>
+                        </select>
+
+                        <button
+                          onClick={() => handleAddQuestion(topic.ID_TEMA)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
+                          disabled={loadingAddQuestion[topic.ID_TEMA]}
+                        >
+                          {loadingAddQuestion[topic.ID_TEMA] ? (
+                            <i className="fas fa-spinner animate-spin mr-2" />
+                          ) : null}
+                          Añadir pregunta
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
