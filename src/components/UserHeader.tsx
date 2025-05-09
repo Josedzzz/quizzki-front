@@ -33,7 +33,7 @@ export default function UserHeader({ toggleCard, card }: UserHeaderProps) {
             className={linkClasses("log-out")}
           >
             Cerrar Sesión{" "}
-            <i className="fa-solid fa-arrow-right-from-bracket ml-4"></i>
+            <i className="fa-solid fa-arrow-right-from-bracket ml-2"></i>
           </a>
         </nav>
       </div>
