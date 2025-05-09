@@ -49,7 +49,7 @@ export interface AssignQuestionCredentials {
   questionTime: number;
 }
 
-export interface EvaluationCredentials {
+export interface EvaluationCredentialsUser {
   idGroup: number;
   idStudent: number;
   actualDate: string;
@@ -57,7 +57,7 @@ export interface EvaluationCredentials {
 
 export interface PresentationCredentials {
   idEvaluation: number;
-  idEstudent: number;
+  idStudent: number;
   ipSource: string;
 }
 
